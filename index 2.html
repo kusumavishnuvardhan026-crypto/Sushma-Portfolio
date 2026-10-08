@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sushma Sri — Video Editor Portfolio</title>
+<meta name="description" content="Video editing portfolio of Sushma Sri — reels, shorts and long-form edits.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#92b07a;--ink:#080a08;--ink2:#0d100d;--ink3:#111511;
+  --white:#f2f0eb;--dim:rgba(242,240,235,0.38);--line:rgba(146,176,122,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:"DM Sans",sans-serif;font-weight:300;overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+#cur,#cur-r{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;top:0;left:0;will-change:transform}
+#cur{width:8px;height:8px;background:var(--white);transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s}
+#cur-r{width:36px;height:36px;border:1px solid rgba(146,176,122,.4);transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+body.h #cur{width:16px;height:16px;background:var(--green)}
+body.h #cur-r{width:60px;height:60px;border-color:var(--green)}
+
+/* GRAIN */
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");opacity:.025;pointer-events:none;z-index:8000}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:600;display:flex;align-items:center;justify-content:space-between;padding:14px 48px;background:rgba(8,10,8,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;text-decoration:none}
+.logo img{height:40px;width:40px;object-fit:contain;display:block}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:28px}
+.nav-count{font-size:11px;letter-spacing:.1em;color:rgba(255,255,255,.25)}
+.nav-count b{color:var(--green);font-weight:500}
+.nav-cta{font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;padding:9px 20px;background:var(--green);color:var(--ink);border-radius:2px;text-decoration:none;transition:opacity .2s}
+.nav-cta:hover{opacity:.82}
+
+/* HERO */
+.hero{position:relative;padding-top:68px;overflow:hidden}
+.hero-text{padding:60px 48px 40px;position:relative;z-index:2}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:16px;opacity:0;animation:fadeUp .5s ease .1s forwards}
+.hero-eyebrow::before{content:"";width:18px;height:1.5px;background:var(--green)}
+.hero-title{font-family:"Bebas Neue",sans-serif;font-size:clamp(52px,7vw,100px);line-height:.9;letter-spacing:-.02em;color:var(--white);opacity:0;animation:fadeUp .6s ease .2s forwards}
+.hero-title em{color:var(--green);font-style:normal}
+
+/* FEATURED — big autoplay muted video */
+.featured{position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;cursor:pointer}
+.featured iframe{position:absolute;inset:-2px;width:calc(100% + 4px);height:calc(100% + 4px);border:none;pointer-events:none}
+.featured-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,8,1) 0%,rgba(8,10,8,.1) 50%,transparent 80%);z-index:1;pointer-events:none}
+.featured-meta{position:absolute;bottom:0;left:0;right:0;padding:32px 48px;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.feat-badge{display:inline-flex;align-items:center;gap:6px;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:8px}
+.feat-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.feat-title{font-family:"Bebas Neue",sans-serif;font-size:clamp(24px,3.5vw,44px);letter-spacing:-.01em;color:var(--white);line-height:1;margin-bottom:5px}
+.feat-sub{font-size:12px;color:var(--dim)}
+.feat-play{width:54px;height:54px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;flex-shrink:0;transition:transform .2s}
+.feat-play:hover{transform:scale(1.1)}
+.feat-play svg{fill:var(--ink);margin-left:3px}
+.feat-play-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-top:5px;text-align:center}
+
+/* FILTER */
+.filter-bar{display:flex;align-items:center;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;padding:0 48px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-btn{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:16px 22px;background:transparent;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;color:rgba(255,255,255,.28);cursor:pointer;white-space:nowrap;transition:color .2s}
+.filter-btn:hover{color:var(--white)}
+.filter-btn.active{color:var(--green);border-bottom-color:var(--green)}
+
+/* GRID */
+.grid-section{padding:2px 48px 80px}
+.group{padding-top:36px}
+.group-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+.group-head h2{font-family:"Bebas Neue",sans-serif;font-weight:400;font-size:28px;letter-spacing:.01em;line-height:1;color:var(--white)}
+.group-count{font-size:11px;color:var(--dim)}
+.portfolio-grid{display:grid;gap:2px}
+.grid-h{grid-template-columns:repeat(auto-fit,minmax(320px,420px));justify-content:start}
+.grid-v{grid-template-columns:repeat(auto-fit,minmax(220px,300px));justify-content:start}
+
+/* CARD */
+.vid-card{position:relative;background:#000;overflow:hidden;cursor:pointer}
+.vid-card:focus-visible{outline:2px solid var(--green);outline-offset:-2px}
+.card-video-wrap{position:relative;width:100%;overflow:hidden}
+.vid-card.h .card-video-wrap{aspect-ratio:16/9}
+.vid-card.v .card-video-wrap{aspect-ratio:9/16}
+.card-video-wrap iframe{position:absolute;border:none;pointer-events:none}
+.vid-card.h .card-video-wrap iframe{inset:-2px;width:calc(100% + 4px);height:calc(100% + 4px)}
+/* a vertical video sits pillarboxed inside a 16:9 embed, so widen the iframe until the video fills the card */
+.vid-card.v .card-video-wrap iframe{top:0;left:50%;height:100%;width:316%;transform:translateX(-50%)}
+
+.card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,8,.92) 0%,rgba(8,10,8,.2) 45%,transparent 70%);transition:opacity .3s;z-index:1}
+.vid-card:hover .card-overlay{opacity:.7}
+
+/* play icon on hover */
+.card-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.75);width:46px;height:46px;border-radius:50%;background:rgba(146,176,122,.9);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .28s,transform .28s;z-index:3}
+.vid-card:hover .card-play{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.card-play svg{fill:var(--ink);margin-left:3px}
+
+.vid-info{position:absolute;bottom:0;left:0;right:0;padding:14px 16px;z-index:2}
+.vid-cat{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:3px}
+.vid-title{font-family:"Bebas Neue",sans-serif;font-size:15px;letter-spacing:-.01em;color:var(--white);line-height:1.1;margin-bottom:2px}
+.vid-client{font-size:10px;color:rgba(255,255,255,.28)}
+.vid-dur{position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;background:rgba(8,10,8,.75);color:rgba(255,255,255,.55);padding:3px 7px;border-radius:3px;backdrop-filter:blur(4px);z-index:3}
+
+/* LIGHTBOX */
+.lb{position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;background:rgba(8,10,8,.97);backdrop-filter:blur(16px);opacity:0;pointer-events:none;transition:opacity .3s}
+.lb.open{opacity:1;pointer-events:all}
+.lb-inner{width:min(92vw,1080px)}
+.lb-player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:4px;overflow:hidden}
+.lb-player iframe,.lb-player video{position:absolute;inset:0;width:100%;height:100%;border:none}
+.lb-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 2px 0}
+.lb-cat{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.lb-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:-.01em;color:var(--white);line-height:1}
+.lb-btns{display:flex;gap:8px;align-items:center}
+.lb-btn{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s}
+.lb-btn:hover{border-color:var(--green);color:var(--green)}
+
+/* EMPTY */
+.empty{display:none;padding:80px;text-align:center;font-family:"Bebas Neue",sans-serif;font-size:28px;color:rgba(255,255,255,.12)}
+.empty.show{display:block}
+
+/* FOOTER */
+footer{border-top:1px solid var(--line);padding:26px 48px;display:flex;align-items:center;justify-content:space-between}
+.foot-logo img{height:36px;width:36px;object-fit:contain;display:block}
+.foot-copy{font-size:11px;color:rgba(255,255,255,.2)}
+.foot-links{display:flex;gap:18px}
+.foot-links a{font-size:11px;color:rgba(255,255,255,.25);text-decoration:none;transition:color .2s}
+.foot-links a:hover{color:var(--white)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:900px){
+  nav,footer{padding:14px 20px}
+  .hero-text{padding:50px 20px 28px}
+  .featured-meta{padding:20px}
+  .filter-bar{padding:0 20px}
+  .grid-section{padding:2px 20px 60px}
+  .grid-h{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .grid-h{grid-template-columns:1fr}
+  .grid-v{grid-template-columns:1fr 1fr}
+  .nav-count{display:none}
+  footer{flex-wrap:wrap;gap:12px}
+}
+
+/* MONOGRAM (replaces the old logo image) */
+.mono-photo{display:block;width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid rgba(146,176,122,.45)}
+.mono-photo.sm{width:36px;height:36px}
+.vid-cat:empty,.vid-client:empty,.vid-dur:empty{display:none}
+
+/* LIGHTBOX — portrait player for vertical videos */
+.lb-inner.v{width:min(92vw,calc(70vh * 9 / 16))}
+.lb-inner.v .lb-player{aspect-ratio:9/16}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .hero-eyebrow,.hero-title,.reveal{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<nav>
+  
+  <div class="nav-r">
+    <span class="nav-count">Portfolio &middot; <b id="visCount">0</b> films</span>
+    <a id="ctaMail" class="nav-cta">Work with me &rarr;</a>
+  </div>
+</nav>
+
+<!-- HERO with featured autoplay muted -->
+<div class="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow">Sushma Sri &middot; Video editor</div>
+    <h1 class="hero-title">Visual<br><em>Portfolio</em></h1>
+  </div>
+  <div class="featured" id="featuredCard">
+    <!-- iframe injected by JS -->
+    <div class="featured-overlay"></div>
+    <div class="featured-meta">
+      <div>
+        <div class="feat-badge">Featured</div>
+        <div class="feat-title" id="featTitle"></div>
+        <div class="feat-sub" id="featSub">Selected work</div>
+      </div>
+      <div style="text-align:center">
+        <button class="feat-play" id="featPlayBtn" aria-label="Play featured video">
+          <svg width="18" height="18" viewBox="0 0 18 18"><polygon points="4,2 16,9 4,16"/></svg>
+        </button>
+        <div class="feat-play-label">Play</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER -->
+<div class="filter-bar">
+  <button class="filter-btn active" data-f="all">All work</button>
+  <button class="filter-btn" data-f="horizontal">Horizontal</button>
+  <button class="filter-btn" data-f="vertical">Vertical</button>
+</div>
+
+<!-- GRID (cards are built from the VIDEOS list in the script below) -->
+<div class="grid-section">
+  <section class="group" id="groupH">
+    <div class="group-head"><h2>Horizontal</h2><span class="group-count"></span></div>
+    <div class="portfolio-grid grid-h" id="gridH"></div>
+  </section>
+  <section class="group" id="groupV">
+    <div class="group-head"><h2>Vertical</h2><span class="group-count"></span></div>
+    <div class="portfolio-grid grid-v" id="gridV"></div>
+  </section>
+  <div class="empty" id="empty">No videos in this category yet.</div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb">
+  <div class="lb-inner">
+    <div class="lb-player" id="lbPlayer"></div>
+    <div class="lb-bar">
+      <div>
+        <div class="lb-cat" id="lbCat"></div>
+        <div class="lb-title" id="lbTitle"></div>
+      </div>
+      <div class="lb-btns">
+        <button class="lb-btn" onclick="lbNav(-1)" aria-label="Previous">&#8592;</button>
+        <button class="lb-btn" onclick="lbNav(1)" aria-label="Next">&#8594;</button>
+        <button class="lb-btn" onclick="closeLb()" aria-label="Close">&#x2715;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p class="foot-copy">&copy; 2026 Sushma Sri</p>
+  <div class="foot-links">
+    <a id="footIg" target="_blank" rel="noopener">Instagram</a>
+    <a id="footYt" target="_blank" rel="noopener">YouTube</a>
+    <a id="footMail">Email me</a>
+  </div>
+</footer>
+
+<script>
+// ════════════ EDIT THIS PART ════════════
+// Contact links: leave a value empty ('') and that button stays hidden.
+const SITE = {
+  email:     'shushmasri18@gmail.com',   // e.g. 'you@gmail.com'
+  instagram: 'https://www.instagram.com/sushmaonframe',   // e.g. 'https://instagram.com/yourhandle'
+  youtube:   ''    // e.g. 'https://youtube.com/@yourchannel'
+};
+
+// One line per video.
+//   id    = the part of the YouTube link after youtu.be/ (or /shorts/, or v=)
+//   type  = 'h' for horizontal (16:9), 'v' for vertical (9:16)
+//   title = leave '' and the page fetches the YouTube title itself
+//   optional: label (small tag on the card), client
+const VIDEOS = [
+  { id: 'xaQ7-xqrxyo', type: 'h', title: '' },
+  { id: 'I_RGCAVR2A4', type: 'h', title: '' },
+  { id: 'zoPgayuzn94', type: 'v', title: '' },
+  { id: '-ZIKnbqmgbs', type: 'v', title: '' }
+];
+// ════════════════════════════════════════
+
+// ── BUILD CARDS ──
+const PLAY = '<svg width="14" height="14" viewBox="0 0 14 14"><polygon points="2,1 13,7 2,13" fill="#080a08"/></svg>';
+function buildCard(v){
+  const el = document.createElement('div');
+  el.className = 'vid-card reveal ' + v.type;
+  el.tabIndex = 0;
+  el.setAttribute('role', 'button');
+  el.dataset.yt = v.id;
+  el.dataset.orient = v.type;
+  el.dataset.cat = v.type === 'v' ? 'vertical' : 'horizontal';
+  el.dataset.catlabel = v.label || (v.type === 'v' ? 'Vertical' : 'Horizontal');
+  el.dataset.title = v.title || '';
+  el.innerHTML = '<div class="card-video-wrap"></div><div class="card-overlay"></div>'
+    + '<div class="card-play">' + PLAY + '</div>'
+    + '<div class="vid-info"><div class="vid-cat"></div><div class="vid-title"></div><div class="vid-client"></div></div>'
+    + '<div class="vid-dur"></div>';
+  el.querySelector('.vid-cat').textContent = el.dataset.catlabel;
+  el.querySelector('.vid-title').textContent = v.title || 'Video edit';
+  el.querySelector('.vid-client').textContent = v.client || '';
+  el.querySelector('.vid-dur').textContent = v.type === 'v' ? '9:16' : '16:9';
+  return el;
+}
+VIDEOS.forEach(v => document.getElementById(v.type === 'v' ? 'gridV' : 'gridH').appendChild(buildCard(v)));
+
+const cards = Array.from(document.querySelectorAll('.vid-card'));
+cards.forEach((c, i) => c.dataset.idx = i);
+// the featured hero is 16:9, so it uses the first horizontal video
+const featCard = cards.find(c => c.dataset.orient === 'h') || cards[0];
+
+function setTitle(c, t){
+  c.dataset.title = t;
+  c.querySelector('.vid-title').textContent = t;
+  if (c === featCard) document.getElementById('featTitle').textContent = t;
+}
+if (featCard) document.getElementById('featTitle').textContent = featCard.dataset.title || 'Video edit';
+
+// auto-fill missing titles from YouTube (falls back to "Video edit" if the request fails)
+cards.forEach(c => {
+  if (c.dataset.title) return;
+  const url = 'https://www.youtube.com/watch?v=' + c.dataset.yt;
+  fetch('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent(url))
+    .then(r => { if (!r.ok) throw new Error('oembed'); return r.json(); })
+    .then(d => { if (d && d.title) setTitle(c, d.title); })
+    .catch(() => {});
+});
+
+// ── CONTACT LINKS ──
+function setLink(id, href){
+  const a = document.getElementById(id);
+  if (!a) return;
+  if (href) a.href = href; else a.style.display = 'none';
+}
+setLink('ctaMail', SITE.email && 'mailto:' + SITE.email);
+setLink('footMail', SITE.email && 'mailto:' + SITE.email);
+setLink('footIg', SITE.instagram);
+setLink('footYt', SITE.youtube);
+
+// ── CURSOR ──
+const cur=document.getElementById('cur'),curR=document.getElementById('cur-r');
+let rx=300,ry=300,mx=300,my=300;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;});
+(function loop(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;curR.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.vid-card,.featured').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('h'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('h'));
+});
+
+// ── REVEAL ──
+const obs=new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.07,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// ── EMBED URLS ──
+function mutedEmbed(ytId){
+  return `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0`;
+}
+function fullEmbed(ytId){
+  return `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1`;
+}
+
+// ── MUTED PREVIEWS (load only when a card scrolls into view) ──
+const lazyObs = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting) return;
+    const card = entry.target;
+    const wrap = card.querySelector('.card-video-wrap');
+    if(wrap && !wrap.querySelector('iframe')){
+      const iframe = document.createElement('iframe');
+      iframe.src = mutedEmbed(card.dataset.yt);
+      iframe.allow = 'autoplay; encrypted-media';
+      iframe.title = card.dataset.title || 'Video preview';
+      iframe.setAttribute('allowfullscreen','');
+      wrap.appendChild(iframe);
+    }
+    lazyObs.unobserve(card);
+  });
+}, {threshold:0.1});
+cards.forEach(c=>lazyObs.observe(c));
+
+// ── FEATURED hero autoplay ──
+(function(){
+  if(!featCard) return;
+  const fc = document.getElementById('featuredCard');
+  const iframe = document.createElement('iframe');
+  iframe.src = mutedEmbed(featCard.dataset.yt);
+  iframe.allow = 'autoplay; encrypted-media';
+  iframe.title = 'Featured video';
+  iframe.setAttribute('allowfullscreen','');
+  fc.insertBefore(iframe, fc.firstChild);
+})();
+const featIdx = featCard ? +featCard.dataset.idx : 0;
+document.getElementById('featPlayBtn').addEventListener('click', ()=>openLb(featIdx));
+document.getElementById('featuredCard').addEventListener('click', e=>{
+  if(e.target.closest('.feat-play')) return;
+  openLb(featIdx);
+});
+
+// ── CARD → LIGHTBOX ──
+cards.forEach(c=>{
+  c.addEventListener('click',()=>openLb(+c.dataset.idx));
+  c.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openLb(+c.dataset.idx); } });
+});
+
+// ── FILTER + COUNTS ──
+function refreshGroups(){
+  let total = 0;
+  document.querySelectorAll('.group').forEach(g=>{
+    const n = Array.from(g.querySelectorAll('.vid-card')).filter(c=>c.style.display!=='none').length;
+    g.style.display = n ? '' : 'none';
+    g.querySelector('.group-count').textContent = n + (n===1 ? ' film' : ' films');
+    total += n;
+  });
+  document.getElementById('visCount').textContent = total;
+  document.getElementById('empty').classList.toggle('show', total===0);
+}
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.f;
+    cards.forEach(c=>{ c.style.display = (f==='all' || c.dataset.cat===f) ? '' : 'none'; });
+    refreshGroups();
+  });
+});
+refreshGroups();
+
+// ── LIGHTBOX ──
+let curIdx=0, visIdxs=[];
+function openLb(idx){
+  const f=document.querySelector('.filter-btn.active').dataset.f;
+  visIdxs=cards.filter(c=>f==='all'||c.dataset.cat===f).map(c=>+c.dataset.idx);
+  renderLb(idx);
+  document.getElementById('lb').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function renderLb(idx){
+  const c=cards[idx];
+  document.querySelector('.lb-inner').classList.toggle('v', c.dataset.orient==='v');
+  document.getElementById('lbPlayer').innerHTML=`<iframe src="${fullEmbed(c.dataset.yt)}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>`;
+  document.getElementById('lbCat').textContent=c.dataset.catlabel;
+  document.getElementById('lbTitle').textContent=c.dataset.title||'Video edit';
+  curIdx=idx;
+}
+function closeLb(){
+  document.getElementById('lb').classList.remove('open');
+  document.getElementById('lbPlayer').innerHTML='';
+  document.body.style.overflow='';
+}
+function lbNav(d){
+  const pos=visIdxs.indexOf(curIdx);
+  renderLb(visIdxs[(pos+d+visIdxs.length)%visIdxs.length]);
+}
+document.getElementById('lb').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLb();});
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('open')) return;
+  if(e.key==='Escape')closeLb();
+  else if(e.key==='ArrowRight')lbNav(1);
+  else if(e.key==='ArrowLeft')lbNav(-1);
+});
+</script>
+</body>
+</html>
